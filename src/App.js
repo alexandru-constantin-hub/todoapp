@@ -3,6 +3,10 @@ import './App.css';
 import React from 'react';
 import Todo from './components/todo';
 import TodoForm from './components/todoForm';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+
 
 const data = [
   {text: "Important and urgent", status:"IU", completed: "false"},
@@ -24,21 +28,34 @@ function App() {
     setTodos(newTodos);
   };
 
-  return (
-    <div className="App">
-      <ul>
-        {todos.map((todo, index) => (
-          <Todo key={index} index={index} text={todo.text} status={todo.status} completed={todo.completed} completeTodo={completeTodo} />
-        ))}
+  const filters = [{statusFilter: "IU", textFilter: "Important - Urgent"}, {statusFilter: "NIU", textFilter: "Non important - Urgent"}, {statusFilter:"INU", textFilter:"Important - Non Urgent"}, {statusFilter: "NINU", textFilter: "Non important - Non urgent"}];
 
-      </ul>
-      <TodoForm addTodo={addTodo} />
-      <div>
-      {todos.map((todo, index) => ( 
-          <Todo key={index} index={index} text={todo.text} status={todo.status} completed={todo.completed} completeTodo={completeTodo} />
-        ))}
-      </div>
-    </div>
+  return (
+    
+    <Container maxWidth="md">
+       <TodoForm addTodo={addTodo} />
+      <Grid container>
+        {filters.map((filter)=>
+             <Grid container md={6} space={1}>
+                <List>
+                  {todos.filter(item => item.status===filter.statusFilter && item.completed==="false").map((todo, index) => (
+                    <div>
+                      <h2>{filter.textFilter}</h2>
+                      <Todo key={index} index={index} text={todo.text} status={todo.status} completed={todo.completed} completeTodo={completeTodo} />
+                    </div>
+                  ))}
+                </List>
+            </Grid>
+            )}
+      </Grid>
+      <Grid container>
+        <List>
+          {todos.filter(item => item.completed==="true").map((todo, index) => (
+            <Todo key={index} index={index} text={todo.text} status={todo.status} completed={todo.completed} completeTodo={completeTodo} />
+          ))}
+        </List>
+      </Grid>
+    </Container>
   );
 }
 
